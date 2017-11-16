@@ -42,7 +42,7 @@ Create /esg/config/.esgf_oauth2.json file with a client key and secret
 received from an admin of an ESGF OAuth2 server. When you register your 
 OAuth2 client, your redirect URI is 
 `https://<your_hostname>/esgf-auth/complete/esgf/`. Here is a sample
-esgf_oauth2.json file:
+.esgf_oauth2.json file:
 ```
 {
     "ceda.ac.uk":
@@ -61,8 +61,7 @@ Create a second file /esg/config/esgf_auth_config.json with additional site-spec
 {
     "ESGF_HOSTNAME":"my-node.esgf.org",
     "ESGF_SECRET_KEY":"o7GIieXmQzUGslstjWS7d8==",
-    "DJANGO_SECRET_KEY":"xu0jf]LBUHfLHWbHXzBcDuffHaWQYrev8ojXXd1M",
-    "OAUTH@_SECRET_FILE: "/esg/config/.esgf_oauth2.json"
+    "WEBAPP_SECRET_KEY":"xu0jf]LBUHfLHWbHXzBcDuffHaWQYrev8ojXXd1M",
 }
 ```
 where all values need to be changed by each site administrator. The value of "ESGF_SECRET_KEY" must match the value used to encode the authentication cookies that is configured in the THREDDS web.xml file.

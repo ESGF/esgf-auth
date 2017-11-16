@@ -36,6 +36,7 @@ social-auth-app-django, social-auth-core, etc.)
 ```
 Create the database
 ```
+(venv)$ mkdir db
 (venv)$ ./manage.py migrate
 ```
 Create /esg/config/.esgf_oauth2.json file with a client key and secret 
@@ -61,10 +62,10 @@ Create a second file /esg/config/esgf_auth_config.json with additional site-spec
 {
     "ESGF_HOSTNAME":"my-node.esgf.org",
     "ESGF_SECRET_KEY":"o7GIieXmQzUGslstjWS7d8==",
-    "WEBAPP_SECRET_KEY":"xu0jf]LBUHfLHWbHXzBcDuffHaWQYrev8ojXXd1M",
+    "WEBAPP_SECRET_KEY":"xu0jf]LBUHfLHWbHXzBcDuffHaWQYrev8ojXXd1M"
 }
 ```
-where all values need to be changed by each site administrator. The value of "ESGF_SECRET_KEY" must match the value used to encode the authentication cookies that is configured in the THREDDS web.xml file.
+where all values need to be changed by each site administrator. The value of "ESGF_SECRET_KEY" must match the value used to encode the authentication cookie that is configured in the THREDDS web.xml file.
 
 
 # Apache/mod_wsgi
@@ -99,4 +100,8 @@ For example, on Ubuntu, add the following lines to
 After restarting Apache, open `https://<your_hostname>/esgf-auth/thredds/` 
 in a web browser. The page mimics THREDDS server with the authentication 
 filter. You will also likely need to change ownership of the 'esgf-auth' directory to 
-www-data (on Ubuntu), so Apache can access the SQLite3 database file.
+`www-data` on Debian-based systems or `apache` on Red Hat based systems, so Apache 
+server can access the SQLite3 database file.
+```
+# chown -R apache db
+```

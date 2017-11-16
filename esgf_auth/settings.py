@@ -85,7 +85,6 @@ WSGI_APPLICATION = 'esgf_auth.wsgi.application'
 AUTHENTICATION_BACKENDS = [
    'esgf_auth.backends.esgf.ESGFOAuth2',
    'esgf_auth.backends.esgf.ESGFOpenId',
-   'social_core.backends.yahoo.YahooOpenId',
    'django.contrib.auth.backends.ModelBackend',
 ]
 
@@ -110,7 +109,7 @@ SOCIAL_AUTH_ESGF_AUTH_EXTRA_ARGUMENTS = {\
 ESGF_KNOWN_PROVIDERS = os.environ.get('ESGF_KNOWN_PROVIDERS', '/esg/config/esgf_known_providers.xml')
 ESGF_OAUTH2_SECRET_FILE = os.environ.get('ESGF_OAUTH2_SECRET_FILE', '/esg/config/.esgf_oauth2.json')
 ESGF_RETURN_QUERY_NAME = 'redirect'
-ESGF_SESSION_COOKIE_NAME = 'session-cookie'
+ESGF_SESSION_COOKIE_NAME = 'exchange-cookie'
 ESGF_SECRET_KEY = config_data['ESGF_SECRET_KEY']
 
 # Database
@@ -119,7 +118,7 @@ ESGF_SECRET_KEY = config_data['ESGF_SECRET_KEY']
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'NAME': os.path.join(BASE_DIR, 'db', 'db.sqlite3'),
     }
 }
 

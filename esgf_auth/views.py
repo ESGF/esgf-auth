@@ -88,7 +88,6 @@ def home(request):
                 '''
                 not redirected from THREDDS/authentication filter
                 '''
-                print '1', get_known_providers()
                 return render(request,
                               'auth/home.j2',
                               {'openid_identifier': social.uid,
@@ -121,7 +120,6 @@ def home(request):
             redirection back to THREDDS.
             '''
             request.session['redirect'] = redirect_url
-            print '2', get_known_providers()
             return render(request,
                           'auth/home.j2',
                           {'redirect': redirect_url,
@@ -148,7 +146,6 @@ def home(request):
             return redirect(reverse('social:begin', args=['esgf-openid']))
     else:
         log.error('Could not discover authentication service for {}'.format(openid_identifier))
-        print '3', get_known_providers()
         return render(request,
                       'auth/home.j2',
                       {'redirect': redirect_url,

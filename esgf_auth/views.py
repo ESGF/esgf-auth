@@ -128,7 +128,11 @@ def home(request):
     # request.method == 'POST'
     openid_identifier = request.POST.get('openid_identifier')
     request.session['openid_identifier'] = openid_identifier
-    protocol = discover(openid_identifier)
+    protocol = None
+    try:
+        protocol = discover(openid_identifier)
+    except Exception as e:
+        log.error(e)
     if protocol:
         request.session['next'] = request.path
         credential = get_oauth2_cred(openid_identifier)
@@ -147,11 +151,14 @@ def home(request):
     else:
         log.error('Could not discover authentication service for {}'.format(openid_identifier))
         redirect_url = request.session.get('redirect')
+        message = '''ERROR: Unable to process claimed identity &#39;{}&#39;.<br/>
+                     No OpenID/OAuth2/OIDC service discovered.
+                     Please contact the administrator.'''
         return render(request,
                       'auth/home.j2',
                       {'redirect': redirect_url,
                       'known_providers': get_known_providers(),
-                      'message': 'No OpenID/OAuth2/OIDC service discovered. Please contact the administrator.'})
+                      'message': message.format(openid_identifier)})
 
 
 '''

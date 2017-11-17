@@ -69,6 +69,18 @@
 <h1>Data Access Login</h1>
 					
 
+{% if message %}
+
+<p>&nbsp;</p>
+<div class="errorbox">
+<p>&nbsp;</p>
+<b>Login Failed</b>
+<p class="error">{{ message|safe }}
+<p>&nbsp;</p>
+</div>
+
+{% endif %}
+
 <!-- User is authenticated -->
 {% if user.is_authenticated %}
 
@@ -402,3 +414,10 @@ function sanitize()
 	</body>
 	
 </html>
+<p>&nbsp;</p>
+<div class="errorbox">
+<p>&nbsp;</p>
+<b>Login Failed</b>						
+<p class="error">ERROR: Unable to process claimed identity &#039;https://esg-node.llnl.gov/esgf-idp/openid/&#039;
+<p>&nbsp;</p>
+</div>

@@ -55,7 +55,7 @@ def get_oauth2_cred(openid_identifier):
         except Exception:
             traceback.print_exc()
     log.error('Could not find an OAuth2 client key and secret for {} in {}'
-              .format(parsed_openid.netloc, settings.ESGF_AOTUH2_SECRET_FILE))
+              .format(parsed_openid.netloc, settings.ESGF_OAUTH2_SECRET_FILE))
     return None
 
 

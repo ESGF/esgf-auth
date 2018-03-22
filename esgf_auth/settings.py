@@ -34,7 +34,7 @@ SECRET_KEY = config_data['WEBAPP_SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-DEBUG = False
+#DEBUG = False
 
 ALLOWED_HOSTS = [config_data['ESGF_HOSTNAME']]
 
@@ -69,7 +69,6 @@ TEMPLATES = [
         'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
-            'debug': DEBUG,
             'context_processors': [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',

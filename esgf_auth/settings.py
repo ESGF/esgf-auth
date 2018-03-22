@@ -20,7 +20,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SESSION_COOKIE_NAME = 'esgf-auth'
 
 # site-specific configuration
-ESGF_AUTH_CONFIG_FILE = os.environ.get('ESGF_AUTH_CONFIG_FILE','/esg/config/esgf_auth_config.json')
+ESGF_AUTH_CONFIG_FILE = os.environ.get(
+        'ESGF_AUTH_CONFIG_FILE',
+        '/esg/config/esgf_auth_config.json')
 with open(ESGF_AUTH_CONFIG_FILE) as json_data_file:
     config_data = json.load(json_data_file)
 
@@ -31,10 +33,10 @@ with open(ESGF_AUTH_CONFIG_FILE) as json_data_file:
 SECRET_KEY = config_data['WEBAPP_SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
-#DEBUG = True
-DEBUG =False
+DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = [ config_data['ESGF_HOSTNAME'] ]
+ALLOWED_HOSTS = [config_data['ESGF_HOSTNAME']]
 
 # Application definition
 
@@ -67,7 +69,7 @@ TEMPLATES = [
         'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
-            'debug' : DEBUG,
+            'debug': DEBUG,
             'context_processors': [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
@@ -101,13 +103,17 @@ SOCIAL_AUTH_PIPELINE = (
     'social_core.pipeline.user.user_details'
 )
 
-SOCIAL_AUTH_FIELDS_STORED_IN_SESSION = ['openid_identifier',]
+SOCIAL_AUTH_FIELDS_STORED_IN_SESSION = ['openid_identifier', ]
 SOCIAL_AUTH_SANITIZE_REDIRECTS = False
-SOCIAL_AUTH_ESGF_AUTH_EXTRA_ARGUMENTS = {\
+SOCIAL_AUTH_ESGF_AUTH_EXTRA_ARGUMENTS = {
     'access_type': 'offline',
 }
-ESGF_KNOWN_PROVIDERS = os.environ.get('ESGF_KNOWN_PROVIDERS', '/esg/config/esgf_known_providers.xml')
-ESGF_OAUTH2_SECRET_FILE = os.environ.get('ESGF_OAUTH2_SECRET_FILE', '/esg/config/.esgf_oauth2.json')
+ESGF_KNOWN_PROVIDERS = os.environ.get(
+        'ESGF_KNOWN_PROVIDERS',
+        '/esg/config/esgf_known_providers.xml')
+ESGF_OAUTH2_SECRET_FILE = os.environ.get(
+        'ESGF_OAUTH2_SECRET_FILE',
+        '/esg/config/.esgf_oauth2.json')
 ESGF_RETURN_QUERY_NAME = 'redirect'
 ESGF_SESSION_COOKIE_NAME = 'exchange-cookie'
 ESGF_SECRET_KEY = config_data['ESGF_SECRET_KEY']

@@ -33,8 +33,8 @@ with open(ESGF_AUTH_CONFIG_FILE) as json_data_file:
 SECRET_KEY = config_data['WEBAPP_SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-#DEBUG = False
+#DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = [config_data['ESGF_HOSTNAME']]
 

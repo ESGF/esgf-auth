@@ -33,8 +33,8 @@ with open(ESGF_AUTH_CONFIG_FILE) as json_data_file:
 SECRET_KEY = config_data['WEBAPP_SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
-#DEBUG = True
 DEBUG = False
+#DEBUG = True
 
 ALLOWED_HOSTS = [config_data['ESGF_HOSTNAME']]
 
@@ -123,7 +123,7 @@ ESGF_SECRET_KEY = config_data['ESGF_SECRET_KEY']
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db', 'db.sqlite3'),
+        'NAME': os.path.join(BASE_DIR, '..', 'db', 'db.sqlite3'),
     }
 }
 
@@ -146,6 +146,23 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'stdout': {
+            'level': 'INFO',
+            'class': 'logging.StreamHandler'
+        }
+    },
+    'loggers': {
+        '': {
+            'handlers': ['stdout'],
+            'propagate': False,
+            'level': 'INFO'
+        }
+    }
+}
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.10/topics/i18n/

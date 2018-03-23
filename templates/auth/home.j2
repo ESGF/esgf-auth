@@ -23,8 +23,8 @@
 <script src="https://ajax.googleapis.com/ajax/libs/yui/2.9.0/build/datasource/datasource-min.js" type="text/javascript"></script> 
 <script src="https://ajax.googleapis.com/ajax/libs/yui/2.9.0/build/dragdrop/dragdrop-min.js" type="text/javascript"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/yui/2.9.0/build/datatable/datatable-min.js" type="text/javascript"></script> 
-
-<link rel="stylesheet" type="text/css" href="./static/resources/base.css" />
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static "resources/base.css" %}" />
 </head>
 <body class="yui-skin-sam">
 	<table align="center" width="900px">
@@ -57,7 +57,7 @@
 
 <div id="header">
     <div id="logo_esgf">
-         <img src='./static/resources/esgf.png' style="height:76px; padding:2px" />
+         <img src="{% static "resources/esgf.png" %}" style="height:76px; padding:2px" />
     </div>
     <div id="logo_institution">
 
@@ -92,7 +92,7 @@
 	<caption>Status: logged-in</caption>
 	<tbody><tr>
     <td>
-	<img src="./static/resources/openid.png" width="80" hspace="10px">
+	<img src="{% static "resources/openid.png" %}" width="80" hspace="10px">
 	</td>
     <td>
 	<form name="logoutForm" action="">					
@@ -125,10 +125,10 @@ your home OpenID Provider from one of the options provided in the drop-down list
 
 <!-- user is NOT authenticated -->
 
-<link rel="stylesheet" href="./static/resources/jquery-ui.css">
-<script src="./static/resources/jquery-1.10.2.js"></script>
-<script src="./static/resources/jquery-ui.js"></script>
-<link rel="stylesheet" href="./static/resources/style.css">
+<link rel="stylesheet" href="{% static "resources/jquery-ui.css" %}">
+<script src="{% static "resources/jquery-1.10.2.js" %}"></script>
+<script src="{% static "resources/jquery-ui.js" %}"></script>
+<link rel="stylesheet" href="{% static "resources/style.css" %}">
 
 <!-- kltsa 13/08/2014 : : A select element with auto complete 
                          (Functionality from : http://jqueryui.com/autocomplete/#combobox). 
@@ -344,7 +344,7 @@ function sanitize()
 <caption>Status: not logged-in</caption>
 <tr>
 <td align="right" valign="middle">
-<img src='./static/resources/openid.png' width="80" />
+<img src="{% static "resources/openid.png" %}" width="80" />
 </td>
 <td>
 <table>

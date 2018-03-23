@@ -36,7 +36,7 @@ social-auth-app-django, social-auth-core, etc.)
 ```
 Create the database
 ```
-(venv)$ mkdir db
+(venv)$ mkdir ../db
 (venv)$ ./manage.py migrate
 ```
 Create /esg/config/.esgf_oauth2.json file with a client key and secret 
@@ -86,7 +86,7 @@ For example, on Ubuntu, add the following lines to
             Allow from all
         </Files>
     </Directory>
-    Alias /esgf-auth/home/static/ <your_base_dir>/esgf-auth/static/
+    Alias /esgf-auth/static/ <your_base_dir>/esgf-auth/static/
     <Directory <your_base_dir>/esgf-auth/static>
         Options -Indexes
         # Apache >= 2.4
@@ -103,5 +103,5 @@ filter. You will also likely need to change ownership of the 'esgf-auth' directo
 `www-data` on Debian-based systems or `apache` on Red Hat based systems, so Apache 
 server can access the SQLite3 database file.
 ```
-# chown -R apache db
+# chown -R apache ../db
 ```

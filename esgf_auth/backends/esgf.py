@@ -50,8 +50,8 @@ class ESGFOAuth2(BaseOAuth2):
             elif e.matchTypes(['urn:esg:security:oauth:endpoint:access']):
                 self.ACCESS_TOKEN_URL = e.uri
             elif e.matchTypes(['urn:esg:security:oauth:endpoint:resource']):
-                self.CERTIFICATE_URL = e.uri + '/'
-                self.DEFAULT_SCOPE = [e.uri + '/']
+                self.CERTIFICATE_URL = e.uri
+                self.DEFAULT_SCOPE = [e.uri]
 
 
 

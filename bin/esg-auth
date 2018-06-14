@@ -1,0 +1,138 @@
+#!/bin/bash
+set -x
+# Source ESGF environment variables file
+ESGF_ENVFILE=/etc/esg.env
+if [ -e "$ESGF_ENVFILE" ]; then
+  source $ESGF_ENVFILE
+fi
+LD_LIBRARY_PATH=/opt/esgf/python/lib:$LD_LIBRARY_PATH
+
+# ESGF_INSTALL_PREFIX
+ESGF_INSTALL_PREFIX=${ESGF_INSTALL_PREFIX:-"/usr/local"}
+
+# ESGF Auth software root directory
+ESGF_AUTH_INSTALL_DIR=${ESG_AUTH_INSTALL_DIR:-${ESGF_INSTALL_PREFIX}/esgf-auth}
+ESGF_AUTH_WEBAPP_CONFIG="${ESG_HOME:-/esg}/config/esgf_auth_config.json"
+ESGF_OAUTH2_CREDENTIALS="${ESG_HOME:-/esg}/config/.esgf_oauth2.json"
+
+# The user and group running the ESGF Auth application
+ESGF_AUTH_USER=apache
+ESGF_AUTH_GROUP=apache
+
+# The specific ESGF Auth version to install
+# ESGF version
+
+VERSION='1.0-alpha'
+
+# Must start from bare-bone Python 2.7.9 installation that contains only setup_tools, pip and virtualenv
+PATH=/opt/esgf/python/bin:$PATH
+
+# Location to unpack the Python eggs - must be writable by $USER
+PYTHON_EGG_CACHE_DIR=/var/www/.python-eggs
+
+#=== ESGF INSTALLATION LOGIC - DO NOT CHANGE =========
+
+# Sourcing ESGF Functions
+config_file="${ESG_HOME:-/esg}/config/esgf.properties"
+ESG_FUNCTIONS_FILE=$ESGF_INSTALL_PREFIX/bin/esg-functions
+source $ESG_FUNCTIONS_FILE
+
+# ESGF common installation script
+INSTALLARG_SCRIPT=$ESGF_INSTALL_PREFIX/bin/esg-installarg
+if [ -e "$INSTALLARG_SCRIPT" ]; then
+  source $INSTALLARG_SCRIPT
+fi
+
+[ -z "${esgf_host}" ] && get_property esgf_host
+
+#=== Auth Web App INSTALLATION LOGIC - DO NOT CHANGE ==========
+
+setup_auth_webapp() {
+
+
+    # Create a configuration file for the ESGF Auth web application
+    ESGF_SECRET_KEY=`openssl rand -base64 16`
+    WEBAPP_SECRET_KEY=`openssl rand -base64 30`
+
+    echo '{'                                                 >  "$ESGF_AUTH_WEBAPP_CONFIG"
+    echo "    \"ESGF_HOSTNAME\": \"$esgf_host\","            >> "$ESGF_AUTH_WEBAPP_CONFIG"
+    echo "    \"ESGF_SECRET_KEY\": \"$ESGF_SECRET_KEY\","    >> "$ESGF_AUTH_WEBAPP_CONFIG"
+    echo "    \"WEBAPP_SECRET_KEY\": \"$WEBAPP_SECRET_KEY\"" >> "$ESGF_AUTH_WEBAPP_CONFIG"
+    echo '}'                                                 >> "$ESGF_AUTH_WEBAPP_CONFIG"
+    chown apache "$ESGF_AUTH_WEBAPP_CONFIG"
+
+    # Create an empty file for OAuth2 keys and secrets
+    if [ ! -f "$ESGF_OAUTH2_CREDENTIALS" ]; then
+        echo '{'                          >  "$ESGF_OAUTH2_CREDENTIALS"
+        echo '    "ESGF_IDP_HOSTNAME": {' >> "$ESGF_OAUTH2_CREDENTIALS"
+        echo '        "key": "",'         >> "$ESGF_OAUTH2_CREDENTIALS"
+        echo '        "secret": ""'       >> "$ESGF_OAUTH2_CREDENTIALS"
+        echo '    }'                      >> "$ESGF_OAUTH2_CREDENTIALS"
+        echo '}'                          >> "$ESGF_OAUTH2_CREDENTIALS"
+    fi
+    chmod 0600 "$ESGF_OAUTH2_CREDENTIALS"
+    chown apache "$ESGF_OAUTH2_CREDENTIALS"
+
+    # Create an installation directory and Python 2.7 virtual environment
+    mkdir -p $ESGF_AUTH_INSTALL_DIR
+
+    pushd $ESGF_AUTH_INSTALL_DIR
+    virtualenv venv
+    . venv/bin/activate
+    pip install -U setuptools
+
+    # Install Crypto Cookie Python package
+    git clone https://github.com/philipkershaw/crypto-cookie.git
+    pushd crypto-cookie
+    pip install -e .
+    popd
+
+    # Install esgf-auth Python package
+    wget -O v$VERSION.tar.gz https://github.com/ESGF/esgf-auth/archive/v$VERSION.tar.gz
+    tar xzf v$VERSION.tar.gz
+    rm -f v$VERSION.tar.gz
+    ln -sf esgf-auth-$VERSION esgf-auth
+    pushd esgf-auth
+    pip install -r requirements.txt
+
+    # Create an empty SQLite3 database
+    mkdir -p ../db
+    ./manage.py migrate
+    chown -R $ESGF_AUTH_USER ../db
+    popd
+
+    source deactivate
+    popd
+}
+
+generate_apache_config() {
+cat > /etc/httpd/conf/esgf-httpd-auth.conf <<EOF
+    WSGIDaemonProcess esgf_auth python-path=$ESGF_AUTH_INSTALL_DIR/esgf-auth:$ESGF_AUTH_INSTALL_DIR/venv/lib/python2.7/site-packages
+    WSGIScriptAlias /esgf-auth $ESGF_AUTH_INSTALL_DIR/esgf-auth/esgf_auth/wsgi.py process-group=esgf_auth
+    <Directory $ESGF_AUTH_INSTALL_DIR/esgf-auth/esgf_auth>
+        <Files wsgi.py>
+            # Apache >= 2.4
+            #Require all granted
+            # Apache <= 2.2
+            Order allow,deny
+            Allow from all
+        </Files>
+    </Directory>
+    Alias /esgf-auth/static/ $ESGF_AUTH_INSTALL_DIR/esgf-auth/static/
+    <Directory $ESGF_AUTH_INSTALL_DIR/esgf-auth/static>
+        Options -Indexes
+        # Apache >= 2.4
+        #Require all granted
+        # Apache <= 2.2
+        Order allow,deny
+        Allow from all
+        AllowOverride None
+    </Directory>
+EOF
+}
+
+
+setup_auth_webapp
+
+#generate_apache_config
+

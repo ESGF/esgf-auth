@@ -1,5 +1,5 @@
 #!/bin/bash
-set -x
+
 # Source ESGF environment variables file
 ESGF_ENVFILE=/etc/esg.env
 if [ -e "$ESGF_ENVFILE" ]; then
